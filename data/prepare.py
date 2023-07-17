@@ -181,7 +181,7 @@ def generate_vrd_annos(root_dir, dbname):
     
         vrd_anno[vid] = {"frame_annos": each_frame_dict, "rel_tag_uids": rel_tag_uids}
 
-    with open("metadata/%s_annotations.pkl"%(dbname), "wb") as f:
+    with open("/hdd/ttmanh/VidVRD/VRDFormer_VRD/data/vidvrd_mini/%s_annotations.pkl"%(dbname), "wb") as f:
         pkl.dump(vrd_anno, f)
         
     
@@ -191,7 +191,7 @@ def get_trainval_frameids(root_dir, dbname, split, timestep, min_max_duration=32
     anno_files += glob.glob("%s/%s/annotations/%s/*.json"%(root_dir, dbname.replace("part", ""), split))
     print(len(anno_files))
     
-    with open("metadata/%s_annotations.pkl"%dbname, "rb") as f:
+    with open("/hdd/ttmanh/VidVRD/VRDFormer_VRD/data/vidvrd_mini/%s_annotations.pkl"%dbname, "rb") as f:
         meta_anno = pkl.load(f)
 
     if "val" in split:
@@ -208,7 +208,7 @@ def get_trainval_frameids(root_dir, dbname, split, timestep, min_max_duration=32
             
             pos_fids = pos_fids.tolist()
             val_pos_frames[vid] = pos_fids
-        with open("metadata/%s_val_frames.json"%dbname, "w") as f:
+        with open("/hdd/ttmanh/VidVRD/VRDFormer_VRD/data/vidvrd_mini/%s_val_frames.json"%dbname, "w") as f:
             json.dump(val_pos_frames, f)
         return
     
@@ -273,15 +273,15 @@ def get_trainval_frameids(root_dir, dbname, split, timestep, min_max_duration=32
     print(total_fnum, "Num of sampled frames: %d"%len(train_begin_fids))
     print(succ_fnum, fail_fnum)
   
-    with open("metadata/%s_%s_frames_stage%d.json"%(dbname, split, stage), "w") as f:
+    with open("/hdd/ttmanh/VidVRD/VRDFormer_VRD/data/vidvrd_mini/%s_%s_frames_stage%d.json"%(dbname, split, stage), "w") as f:
         json.dump({"%s_begin_fids"%split: train_begin_fids, "durations": durations}, f)
         
            
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Prepare Data", add_help=False)
     parser.add_argument("--func", type=str)
-    parser.add_argument("--root_dir", default="/home/zhengsipeng/data", type=str)
-    parser.add_argument("--dbname", default="vidvrd", type=str, choices=["vidvrd", "vidor", "vidorpart"])
+    parser.add_argument("--root_dir", default="/hdd/ttmanh/VidVRD/VRDFormer_VRD/data", type=str)
+    parser.add_argument("--dbname", default="vidvrd", type=str, choices=["vidvrd", "vidvrd_mini", "vidor", "vidorpart"])
     parser.add_argument("--split", default="train", type=str, choices=["train", "val"])
     parser.add_argument("--timestep", default=1, type=int)  # 1 for vidvrd, 8 for vidor
     parser.add_argument("--minmax_dur", default=24, type=int) # 24 for vidvrd, 32 for vidor
