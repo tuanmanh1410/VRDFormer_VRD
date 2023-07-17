@@ -59,7 +59,7 @@ class TrackingBase(nn.Module):
             # random subset of positive target pairs
             if self._track_query_false_negative_prob:
                 random_subset_mask = torch.randperm(len(prev_target_ind))[:num_prev_target_ind]
-                prev_out_ind = prev_out_ind[random_subset_mask]
+                prev_out_ind = prev_out_ind[random_subset_mask].to(device)
                 prev_target_ind = prev_target_ind[random_subset_mask]
         
             # detected prev frame tracks
@@ -78,6 +78,12 @@ class TrackingBase(nn.Module):
             
             # random false positives
             # generally we do not add false positive
+            ''' -- debug --
+            print((prev_out['pred_sub_boxes']).device)
+            print((prev_out_ind).device)
+            print((target_ind_matching).device)
+            '''
+
             if add_false_pos:
                 prev_sub_boxes_matched = prev_out['pred_sub_boxes'][i, prev_out_ind[target_ind_matching]]
                 prev_obj_boxes_matched = prev_out['pred_obj_boxes'][i, prev_out_ind[target_ind_matching]]
