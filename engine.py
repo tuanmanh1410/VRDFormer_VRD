@@ -146,6 +146,10 @@ def train_stage1(model, criterion, data_loader, optimizer, device, epoch, args):
         losses = sum(loss_dict[k] * weight_dict[k] for k in loss_dict.keys() if k in weight_dict)
         is_loss_invalid(losses)
         
+        ''' -- Debug --
+        test_keys = list(loss_dict.keys())
+        print("TTMANH:", test_keys)
+        '''
         # reduce losses over all GPUs for logging purposes
         loss_dict_reduced = utils.reduce_dict(loss_dict)
         loss_dict_reduced_unscaled = {f'{k}_unscaled': v
@@ -167,9 +171,9 @@ def train_stage1(model, criterion, data_loader, optimizer, device, epoch, args):
             optimizer.zero_grad()
             
         metric_logger.update(loss=loss_value, **loss_dict_reduced_scaled, **loss_dict_reduced_unscaled)
-        metric_logger.update(sub_class_acc=loss_dict_reduced['sub_class_acc'])
-        metric_logger.update(obj_class_acc=loss_dict_reduced['obj_class_acc'])
-        metric_logger.update(verb_class_acc=loss_dict_reduced['verb_class_acc'])
+        metric_logger.update(sub_class_acc=loss_dict_reduced['sub_class_error'])
+        metric_logger.update(obj_class_acc=loss_dict_reduced['obj_class_error'])
+        metric_logger.update(verb_class_acc=loss_dict_reduced['verb_class_error'])
         metric_logger.update(lr=optimizer.param_groups[0]["lr"], 
                              lr_backbone=optimizer.param_groups[1]["lr"])
         '''

@@ -220,13 +220,15 @@ def main(args):
                     'epoch': epoch,
                     'args': args,
                 }, checkpoint_path)
-        
-        test_stats = eval_one_epoch(model, data_loader_val, device, epoch, args)
-        print(test_stats)
+        if args.stage == 2:
+            test_stats = eval_one_epoch(model, data_loader_val, device, epoch, args)
+            print(test_stats)
+
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                      'epoch': epoch,
                      'n_parameters': n_parameters}
-        if args.output_dir and utils.is_main_process():
+        #if args.output_dir and utils.is_main_process():
+        if args.output_dir:
             with (output_dir / "log.txt").open("a") as f:
                 f.write(json.dumps(log_stats) + "\n")
         
